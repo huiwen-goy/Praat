@@ -1,0 +1,46 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Extract consecutive segments from long file (cut at zero crossings)
+comment Original file
+sentence Longfile /Users/Shared/Praat_test/OrigSoundfiles/babbletrack.wav
+comment Durations of segments
+real Duration 2.0
+comment Number of segments
+real Numbersegments 10
+comment Save cut segments to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment New common file name (will be followed by segment number)
+sentence Newname babblesegment
+endform
+
+Read from file... 'longfile$'
+longfilename$ = selected$ ("Sound")
+
+Edit
+editor Sound 'longfilename$'
+
+for b from 1 to numbersegments
+
+startpoint = duration*b
+Move cursor to... startpoint
+Move cursor to nearest zero crossing
+newstartpoint = Get cursor
+
+endpoint = duration*b + duration
+Move cursor to... endpoint
+Move cursor to nearest zero crossing
+newendpoint = Get cursor
+
+Select... newstartpoint newendpoint
+newfilename$ = "'longfilename$'" + "_" + "'b'"
+Save selected sound as WAV file... 'newdirectory$'/'newfilename$'.wav
+
+endfor
+
+endeditor Sound 'longfilename$'
+
+select Sound 'longfilename$'
+Remove
+
+clearinfo
+print :O)

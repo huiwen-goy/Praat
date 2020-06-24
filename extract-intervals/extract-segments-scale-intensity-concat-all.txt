@@ -1,0 +1,54 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Extract sentences, scale, concatenate, save as WAV
+comment Textgrid folder
+sentence Textgrid_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Sound file folder
+sentence Original_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Scale intensity to
+real New_intensity 70.0
+comment Save concatenated and scaled file to
+sentence New_folder /Users/Shared/Praat_test/NewSoundfiles
+comment Concatenated and scaled file name
+sentence Concat_scaled_name concatfile70dB
+endform
+
+Create Strings as file list...  list 'textgrid_folder$'/*.TextGrid
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'textgrid_folder$'/'current_file$'
+
+object_name$ = selected$ ("TextGrid")
+begin_sentence = Get start point... 1 2
+end_sentence = Get end point... 1 2
+
+Open long sound file... 'original_folder$'/'object_name$'.wav
+Extract part... begin_sentence end_sentence no
+newobjectname$ = "'object_name$'" + "_sentence"
+Rename... 'newobjectname$'
+Scale intensity... new_intensity
+
+select TextGrid 'object_name$'
+plus LongSound 'object_name$'
+Remove
+
+endfor
+
+pause Check Strings list
+
+select Strings list
+Remove
+
+select all
+Concatenate
+Write to WAV file... 'new_folder$'/'concat_scaled_name$'.wav
+
+select all
+Remove
+
+clearinfo
+print :O)

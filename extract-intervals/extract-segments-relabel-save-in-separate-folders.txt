@@ -1,0 +1,71 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+# textgrids have single tier and multiple labelled intervals; interval 2, 4 and 5 need to be extracted and saved to different folders
+
+form Extract marked intervals
+comment Original soundfiles
+sentence Original_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Corresponding textgrids
+sentence Textgrid_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Talker? Type in 0, 1, 2 or 3
+real Talker 0
+comment Save Callsign files to?
+sentence Callsign_folder /Users/Shared/Praat_test/NewSoundfiles
+comment Save Colour files to?
+sentence Colour_folder /Users/Shared/Praat_test/NewSoundfiles
+comment Save Number files to?
+sentence Number_folder /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list...  list 'textgrid_folder$'/*.TextGrid
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'textgrid_folder$'/'current_file$'
+
+object_name$ = selected$ ("TextGrid")
+
+callsign_label$ = Get label of interval... 1 2
+callsign_start = Get start point... 1 2
+callsign_end = Get end point... 1 2
+
+colour_label$ = Get label of interval... 1 4
+colour_start = Get start point... 1 4
+colour_end = Get end point... 1 4
+
+number_label$ = Get label of interval... 1 5
+number_start = Get start point... 1 5
+number_end = Get end point... 1 5
+
+Open long sound file... 'original_folder$'/'object_name$'.wav
+longsoundname$ = selected$ ("LongSound")
+
+select LongSound 'longsoundname$'
+Extract part... callsign_start callsign_end no
+callsignfilename$ = "Talker" + "'talker'" + "_" + "'object_name$'" + "_" + "'callsign_label$'"
+Save as WAV file... 'callsign_folder$'/'callsignfilename$'.wav
+
+select LongSound 'longsoundname$'
+Extract part... colour_start colour_end no
+colourfilename$ = "Talker" + "'talker'" + "_" + "'object_name$'" + "_" + "'colour_label$'"
+Save as WAV file... 'colour_folder$'/'colourfilename$'.wav
+
+select LongSound 'longsoundname$'
+Extract part... number_start number_end no
+numberfilename$ = "Talker" + "'talker'" + "_" + "'object_name$'" + "_" + "'number_label$'"
+Save as WAV file... 'number_folder$'/'numberfilename$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline 'number_of_files' Callsign files saved to 'callsign_folder$'
+printline 'number_of_files' Colour files saved to 'colour_folder$'
+printline 'number_of_files' Number files saved to 'number_folder$'
+print :O)

@@ -1,0 +1,40 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Extracts second interval
+comment Sound file folder?
+sentence Original_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Textgrid folder?
+sentence Textgrid_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Save extracted files to?
+sentence New_folder /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list...  list 'textgrid_folder$'/*.TextGrid
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'textgrid_folder$'/'current_file$'
+
+object_name$ = selected$ ("TextGrid")
+
+begin_word = Get start point... 1 2
+end_word = Get end point... 1 2
+word_label = Get label of interval... 1 2
+
+Open long sound file... 'original_folder$'/'object_name$'.wav
+Extract part... begin_word end_word no
+new_word_name$ = "'object_name$'" + "'word_label$'"
+select Sound 'new_word_name$'
+Write to WAV file... 'new_folder$'/'new_word_name$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

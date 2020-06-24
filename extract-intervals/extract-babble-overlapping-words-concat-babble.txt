@@ -1,0 +1,75 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+# There are speech files (named S1_01 to S1_50) with textgrids that contain annotated intervals of interest; the speech files are accompanied by babble tracks (named N1_01 to N1_50); we need to extract the segments of babble that would overlay the marked speech intervals when both speech and babble files are played together to listeners; babble segments are then concatenated to form one continuous file
+
+form Extract babble segments
+comment Textgrid folder
+sentence Textgrid_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Sound file folder
+sentence Original_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Babble file name prefix
+sentence Babble_header N1_
+comment Save concatenated files to
+sentence New_folder /Users/Shared/Praat_test/NewSoundfiles
+comment Concatenated file name
+sentence Concat_name noise_segments_concat
+endform
+
+Create Strings as file list...  list 'textgrid_folder$'/*.TextGrid
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'textgrid_folder$'/'current_file$'
+
+object_name$ = selected$ ("TextGrid")
+segment_start = Get start point... 3 2
+segment_end = Get end point... 3 2
+word_label$ = Get label of interval... 3 2
+
+if a < 10
+filenumber$ = "0" + "'a'"
+elsif a > 9
+filenumber$ = "'a'"
+endif
+babble_name$ = "'babble_header$'" + "'filenumber$'"
+Read from file... 'original_folder$'/'babble_name$'.wav
+
+select Sound 'babble_name$'
+plus TextGrid 'object_name$'
+Edit
+editor TextGrid 'object_name$'
+
+Move cursor to... segment_start
+Move cursor to nearest zero crossing
+new_segment_start = Get cursor
+
+Move cursor to... segment_end
+Move cursor to nearest zero crossing
+new_segment_end = Get cursor
+
+Select... new_segment_start new_segment_end
+Extract selected sound (time from 0)
+
+endeditor 
+
+select Sound 'babble_name$'
+plus TextGrid 'object_name$'
+Remove
+
+endfor
+
+select Strings list
+Remove
+
+select all
+Concatenate
+Save as WAV file... 'new_folder$'/'concat_name$'.wav
+
+select all
+Remove
+
+clearinfo
+print :O)

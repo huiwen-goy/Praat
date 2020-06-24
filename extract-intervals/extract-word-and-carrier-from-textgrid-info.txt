@@ -1,0 +1,53 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Extracts marked carrier phrases and target words
+comment Original sound files
+sentence Original_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Corresponding textgrids
+sentence Textgrid_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Save word files to
+sentence Word_folder /Users/Shared/Praat_test/NewSoundfiles
+comment Add optional suffix for all word files
+sentence Word_suffix _word
+comment Save carrier files to
+sentence Carrier_folder /Users/Shared/Praat_test/NewSoundfiles
+comment Add optional suffix for all carrier files
+sentence Carrier_suffix _carrier
+endform
+
+Create Strings as file list...  list 'textgrid_folder$'/*.TextGrid
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'textgrid_folder$'/'current_file$'
+
+object_name$ = selected$ ("TextGrid")
+
+begin_carrier = Get start point... 2 2
+begin_word = Get start point... 3 2
+end_word = Get end point... 3 2
+
+Open long sound file... 'original_folder$'/'object_name$'.wav
+longsoundname$ = selected$ ("LongSound")
+Extract part... begin_word end_word no
+wordfilename$ = "'object_name$'" + "'word_suffix$'"
+Save as WAV file... 'word_folder$'/'wordfilename$'.wav
+
+select LongSound 'longsoundname$'
+Extract part... begin_carrier begin_word no
+carrierfilename$ = "'object_name$'" + "'carrier_suffix$'"
+Save as WAV file... 'carrier_folder$'/'carrierfilename$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline Carrier files saved to 'carrier_folder$'
+printline Word files saved to 'word_folder$'
+print :O)

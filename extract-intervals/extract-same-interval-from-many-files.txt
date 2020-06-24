@@ -1,0 +1,58 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Extract fixed interval from files (cut at zero crossings)
+comment Original soundfiles
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Extract this interval from each soundfile
+comment Interval start point
+real Startpoint 2.0
+comment Interval end point
+real Endpoint 4.0
+comment Save extracted segments to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Suffix
+sentence Suffix _extract
+comment Save time log to?
+sentence Datadirectory /Users/Shared/Praat_test/Data
+endform
+
+header$ = "Filename" + tab$ + "Start_time" + tab$ + "End_time"
+header$ > 'datadirectory$'/time_log.txt
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... j
+
+Read from file... 'directory$'/'currentfile$'
+
+filename$ = currentfile$ - ".wav"
+select Sound 'filename$'
+
+Edit
+editor Sound 'filename$'
+Move cursor to... startpoint
+Move cursor to nearest zero crossing
+start_time = Get cursor
+Move cursor to... endpoint
+Move cursor to nearest zero crossing
+end_time = Get cursor
+
+Select... start_time end_time
+newfilename$ = "'filename$'" + "'suffix$'"
+Save selected sound as WAV file... 'newdirectory$'/'newfilename$'.wav
+fileappend "'datadirectory$'/time_log.txt" 'filename$''tab$''start_time''tab$''end_time''newline$'
+
+endeditor Sound 'filename$'
+
+endfor
+
+select all
+minus Strings list
+Remove
+
+clearinfo
+print :O)

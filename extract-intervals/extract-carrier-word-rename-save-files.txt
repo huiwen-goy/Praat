@@ -1,0 +1,63 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Extract carriers and words; remove numbers; save to folders
+comment Original soundfiles
+sentence Original_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Corresponding textgrids
+sentence Textgrid_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Save carrier files to
+sentence Carrier_folder /Users/Shared/Praat_test/NewSoundfiles
+comment Save word files to
+sentence Word_folder /Users/Shared/Praat_test/NewSoundfiles
+comment Add suffix for carriers. If none needed, leave empty.
+sentence Carrier_suffix _carrier
+comment Add suffix for words. If none needed, leave empty.
+sentence Word_suffix _word
+comment Which talker? Enter YAF or OAF
+word Talker YAF
+comment Which emotion?
+word Emotion happy
+endform
+
+Create Strings as file list...  list 'original_folder$'/*.wav
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+current_file$ = Get string... a
+Open long sound file... 'original_folder$'/'current_file$'
+
+object_name$ = selected$ ("LongSound")
+
+Read from file... 'textgrid_folder$'/'object_name$'.TextGrid
+
+begin_carrier = Get starting point... 2 2
+end_carrier = Get end point... 2 2
+begin_word = Get starting point... 3 2
+end_word = Get end point... 3 2
+
+carrier_duration = (end_carrier - begin_carrier) * 1000
+word_duration = (end_word - begin_word) * 1000
+word_label$ = Get label of interval... 3 2
+
+select LongSound 'object_name$'
+Extract part... begin_carrier end_carrier no
+carrierfilename$ = "'Talker$'" + "_" + "'word_label$'" + "_" + "'emotion$'" + "'carrier_suffix$'"
+Save as WAV file... 'carrier_folder$'/'carrierfilename$'.wav
+
+select LongSound 'object_name$'
+Extract part... begin_word end_word no
+wordfilename$ = "'Talker$'" + "_" + "'word_label$'" + "_" + "'emotion$'" + "'word_suffix$'"
+Save as WAV file... 'word_folder$'/'wordfilename$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline Carrier files saved to 'carrier_folder$'
+printline Word files saved to 'word_folder$'
+printline :O)

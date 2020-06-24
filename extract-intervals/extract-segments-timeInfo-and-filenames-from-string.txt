@@ -1,0 +1,69 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Read time info, extract segments
+comment Original soundfiles
+sentence Original_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save extracted files to
+sentence New_directory /Users/Shared/Praat_test/NewSoundfiles
+comment Text file with soundfile names
+sentence Soundlist /Users/Shared/Praat_test/OrigSoundfiles/strings.txt
+comment Text file with two columns: start and end times
+sentence Times_list /Users/Shared/Praat_test/OrigSoundfiles/times.txt
+comment Append suffix to new files?
+sentence Suffix _extract
+endform
+
+header$ = "Filename" + tab$ + "Start" + tab$ + "End" + tab$ + "Extract start" + tab$ + "Extract end" + newline$
+header$ > 'new_directory$'/segment_time_log.txt
+
+Read Matrix from raw text file... 'times_list$'
+To TableOfReal
+Rename... start_end_times
+
+Read Strings from raw text file... 'soundlist$'
+Rename... soundlist
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings soundlist
+current_soundfile$ = Get string... a
+Read from file... 'original_directory$'/'current_soundfile$'.wav
+current_filename$ = selected$ ("Sound")
+
+select TableOfReal start_end_times
+start_time = Get value... a 1
+select TableOfReal start_end_times
+end_time = Get value... a 2
+
+select Sound 'current_filename$'
+
+Edit
+editor Sound 'current_filename$'
+
+Move cursor to... start_time
+Move cursor to nearest zero crossing
+start_extract = Get cursor
+
+Move cursor to... end_time
+Move cursor to nearest zero crossing
+end_extract = Get cursor
+
+Select... start_extract end_extract
+newfilename$ = "'current_filename$'" + "'suffix$'"
+Write selected sound to WAV file... 'new_directory$'/'newfilename$'.wav
+
+fileappend "'new_directory$'/segment_time_log.txt" 'current_filename$''tab$''start_time''tab$''end_time''tab$''start_extract''tab$''end_extract''newline$'
+
+endeditor Sound 'current_filename$'
+
+select all
+minus Strings soundlist
+minus TableOfReal start_end_times
+Remove
+
+endfor
+
+clearinfo
+printline 'number_of_files' sound files processed
+printline :O)
