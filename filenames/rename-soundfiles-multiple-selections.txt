@@ -1,0 +1,38 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Rename soundfiles
+comment Where are your original files?
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Where do you want to save your new files?
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Which list? Enter 1, 2, 3 or 4
+integer List 1
+comment Who is your talker? Enter 1, 2, 3 or 4
+word Talker 1
+endform
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+
+Read from file... 'directory$'/'current_file$'
+
+filename$ = current_file$ - ".wav"
+
+newfilename$ = "'List'" + "_" + "'Talker$'" + "_" + "'filename$'"
+
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+Remove
+
+endfor
+
+select all
+Remove
+
+clearinfo
+printline 'number_of_files' files processed
+print :O)

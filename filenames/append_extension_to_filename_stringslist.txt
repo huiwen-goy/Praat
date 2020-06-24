@@ -1,0 +1,23 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+oldstringslist$ = "strings_old"
+newstringslist$ = "strings"
+
+header_row$ = "Filename" + tab$ + newline$
+header_row$ > /Users/Shared/Praat_test/NewSoundfiles/'newstringslist$'.txt
+
+Read Strings from raw text file... /Users/Shared/Praat_test/OrigSoundfiles/'oldstringslist$'.txt
+number_of_strings = Get number of strings
+
+for a from 1 to number_of_strings
+
+currentfilename$ = Get string... a
+
+newfilename$ = currentfilename$ + ".wav"
+
+fileappend "/Users/Shared/Praat_test/NewSoundfiles/'newstringslist$'.txt" 'newfilename$''newline$'
+
+endfor
+
+clearinfo
+printline :O)

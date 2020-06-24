@@ -1,0 +1,36 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Append suffix to filenames
+comment Where are the original files?
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new files to?
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Append suffix?
+sentence Suffix _v2
+endform
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+
+Read from file... 'directory$'/'current_file$'
+
+filename$ = current_file$ - ".wav"
+
+newfilename$ = "'filename$'" + "'suffix$'"
+
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+Remove
+
+endfor
+
+select all
+Remove
+clearinfo
+
+printline 'number_of_files' files renamed
+print :O)

@@ -1,0 +1,42 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Extract folder and file names
+comment Higher folder
+sentence Folder_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Data directory
+sentence Data_directory /Users/Shared/Praat_test/NewSoundfiles
+comment Data filename
+sentence Data_filename filenames_log
+endform
+
+header_row$ = "Filename" + tab$ + newline$
+header_row$ > 'data_directory$'/'data_filename$'.txt
+
+Create Strings as directory list... folderlist 'folder_directory$'/
+number_folders = Get number of strings
+
+for a from 1 to number_folders
+
+select Strings folderlist
+currentfolder$ = Get string... a
+fileappend "'data_directory$'/'data_filename$'.txt" 'currentfolder$''tab$''newline$'
+
+Create Strings as file list... files 'folder_directory$'/'currentfolder$'/
+number_files = Get number of strings
+
+for b from 1 to number_files
+
+select Strings files
+currentfile$ = Get string... b
+
+fileappend "'data_directory$'/'data_filename$'.txt" 'currentfile$''tab$''newline$'
+
+endfor
+
+select Strings files
+Remove
+
+endfor
+
+clearinfo
+print :O)

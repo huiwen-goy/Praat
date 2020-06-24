@@ -1,0 +1,22 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+folder$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+datadirectory$ = "/Users/Shared/Praat_test/Data"
+datafilename$ = "folderlist"
+
+Create Strings as directory list... folders 'folder$'/
+number_folders = Get number of strings
+
+for a from 1 to number_folders
+select Strings folders
+current_folder$ = Get string... a
+fileappend "'datadirectory$'/'datafilename$'.txt" 'current_folder$''newline$'
+endfor
+
+pause Click to remove all
+
+select all
+Remove
+
+clearinfo
+print :O)

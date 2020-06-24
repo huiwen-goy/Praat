@@ -1,0 +1,23 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+newdirectory$ = "/Users/Shared/Praat_test/NewSoundfiles"
+
+Create Strings as file list... list 'directory$'/labrador_*_happy.TextGrid
+numberfiles = Get number of strings
+
+for a from 1 to numberfiles
+
+select Strings list
+currentfile$ = Get string... a
+Read from file... 'directory$'/'currentfile$'
+filename$ = selected$ ("TextGrid")
+Write to text file... 'newdirectory$'/'filename$'.TextGrid
+select TextGrid 'filename$'
+Remove
+
+endfor
+
+clearinfo
+printline 'numberfiles' files copied to new folder
+printline :O)

@@ -1,0 +1,29 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+newdirectory$ = "/Users/Shared/Praat_test/Data"
+
+header_row$ = "Filename" + tab$ + newline$
+header_row$ > 'newdirectory$'/filenames_log.txt
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... j
+
+Read from file... 'directory$'/'currentfile$'
+object_name$ = selected$ ("Sound")
+filename$ = object_name$
+
+fileappend "'newdirectory$'/filenames_log.txt" 'filename$''tab$''newline$'
+
+endfor
+
+select all
+Remove
+
+clearinfo
+print :O)

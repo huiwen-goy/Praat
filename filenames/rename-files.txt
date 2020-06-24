@@ -1,0 +1,34 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Rename soundfiles
+comment Original files
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new files to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list...  list 'directory$'/*.TextGrid
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+
+Read from file... 'directory$'/'current_file$'
+
+filename$ = current_file$ - ".TextGrid"
+
+newfilename$ = filename$ + "_onetier"
+
+Write to text file... 'newdirectory$'/'newfilename$'.TextGrid
+Remove
+
+endfor
+
+select all
+Remove
+
+clearinfo
+printline 'number_of_files' files processed
+print :O)
