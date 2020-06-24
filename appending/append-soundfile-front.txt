@@ -1,0 +1,43 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Append same file to beginning of all soundfiles
+comment Choose file to append
+sentence Fileappend /Users/Shared/Praat_test/OrigSoundfiles/beep.wav
+comment Original soundfiles
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new files to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Optional suffix for new files
+sentence Suffix _appended
+endform
+
+Read from file... 'fileappend$'
+samefilename$ = selected$ ("Sound")
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+current_file$ = Get string... j
+current_filename$ = current_file$ - ".wav"
+Read from file... 'directory$'/'current_file$'
+
+select Sound 'samefilename$'
+plus Sound 'current_filename$'
+Concatenate
+
+newfilename$ = "'current_filename$'" + "'suffix$'"
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+select all
+
+minus Sound 'samefilename$'
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

@@ -1,0 +1,49 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Resample (mono wav) soundfile, then append equal silent buffer at both ends
+comment Original soundfiles located in
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new soundfiles to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment New sampling rate
+real Sampling 24414
+comment Silent buffer duration
+real Duration 2.0
+comment Add suffix to new filenames
+sentence Suffix _silence_appended
+endform
+
+Create Strings as file list...  list 'directory$'/*.wav
+numberfiles = Get number of strings
+
+for j from 1 to numberfiles
+
+select Strings list
+currentfile$ = Get string... j
+currentfilename$ = currentfile$ - ".wav"
+
+Create Sound from formula... silence 1 0 duration sampling 0
+Read from file... 'directory$'/'currentfile$'
+select Sound 'currentfilename$'
+Resample... sampling 50
+newfilename$ = currentfilename$ + "_" + "'sampling'"
+
+select Sound silence
+Copy... silence2
+select Sound silence
+plus Sound 'newfilename$'
+plus Sound silence2
+Concatenate
+
+finalfilename$ = "'currentfilename$'" + "'suffix$'"
+
+Write to WAV file... 'newdirectory$'/'finalfilename$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

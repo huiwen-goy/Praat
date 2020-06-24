@@ -1,0 +1,51 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Append leading and trailing periods of silence for each soundfile
+comment Original files
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new files to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Sampling rate of original files
+real Sampling 24414
+comment Duration of leading silence (s)
+real Leading 0.5
+comment Duration of trailing silence (s)
+real Trailing 0.5
+comment Suffix for new filenames
+sentence Suffix _new
+endform
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... j
+filename$ = currentfile$ - ".wav"
+
+Create Sound... silence 0 leading sampling 0
+Rename... silence1
+
+Read from file... 'directory$'/'currentfile$'
+
+Create Sound... silence 0 trailing sampling 0
+Rename... silence2
+
+select Sound silence1
+plus Sound 'filename$'
+plus Sound silence2
+
+Concatenate
+
+newfilename$ = "'filename$'" + "'suffix$'"
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)
