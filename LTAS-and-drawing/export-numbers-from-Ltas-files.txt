@@ -1,0 +1,39 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Export LTAS numbers into text file
+comment LTAS files in
+sentence Ltasdirectory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save exported numbers to
+sentence Datadirectory /Users/Shared/Praat_test/Data
+endform
+
+Create Strings as file list... list 'ltasdirectory$'/*.Ltas
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... j
+Read from file... 'ltasdirectory$'/'currentfile$'
+object_name$ = selected$ ("Ltas")
+datafilename$ = "'object_name$'" + "_export"
+
+header$ = "Bin number" + tab$ + "Bin energy (dB)" + tab$ + newline$
+header$ > 'datadirectory$'/'datafilename$'.txt
+
+number_bins = Get number of bins
+
+for y from 1 to number_bins
+bin_number = y
+bin_energy = Get value in bin... y
+fileappend "'datadirectory$'/'datafilename$'.txt" 'bin_number''tab$''bin_energy''newline$'
+endfor
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

@@ -1,0 +1,48 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Sentence LTAS
+comment Textgrid directory
+sentence Textgrid_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Sound directory
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Data location
+sentence Data_directory /Users/Shared/Praat_test/Data
+comment New file name
+sentence Newfilename averaged_LTAS_bw5
+endform
+
+Create Strings as file list... list 'textgrid_directory$'/*.TextGrid
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... a
+Read from file... 'textgrid_directory$'/'currentfile$'
+
+filename$ = selected$ ("TextGrid")
+segment_start = Get start point... 3 2
+segment_end = Get end point... 3 2
+
+Open long sound file... 'directory$'/'filename$'.wav
+Extract part... segment_start segment_end no
+Rename... word_'filename$'
+
+To Ltas... 5
+
+select LongSound 'filename$'
+plus Sound word_'filename$'
+plus TextGrid 'filename$'
+Remove
+
+endfor
+
+select Strings list
+Remove
+
+select all
+Average
+Write to text file... 'data_directory$'/'newfilename$'.Ltas
+
+clearinfo
+print :O)

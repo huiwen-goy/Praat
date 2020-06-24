@@ -1,0 +1,64 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Word LTAS
+comment Sound directory
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Textgrid directory
+sentence Textgrid_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment LTAS bin width (Hz)
+real Ltas_bandwidth 5
+comment Data location
+sentence Data_directory /Users/Shared/Praat_test/Data
+endform
+
+Create Strings as file list... list 'textgrid_directory$'/*.TextGrid
+
+number_textgrids = Get number of strings
+
+for a from 1 to number_textgrids
+
+select Strings list
+current_textgrid$ = Get string... a
+Read from file... 'textgrid_directory$'/'current_textgrid$'
+filename$ = selected$ ("TextGrid")
+
+number_intervals = Get number of intervals... 1
+
+for b from 1 to number_intervals
+
+select TextGrid 'filename$'
+interval_label$ = Get label of interval... 1 b
+
+if interval_label$ <> ""
+interval_start = Get start point... 1 b
+interval_end = Get end point... 1 b
+
+Open long sound file... 'directory$'/'filename$'.wav
+
+Extract part... interval_start interval_end no
+Rename... 'interval_label$'
+interval_name$ = selected$ ("Sound")
+To Ltas... 'ltas_bandwidth'
+newfilename$ = "'filename$'" + "_" + "'interval_label$'"
+Save as text file... 'data_directory$'/'newfilename$'.Ltas
+
+select Sound 'interval_name$'
+plus Ltas 'interval_name$'
+Remove
+
+endif
+
+endfor
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline Sound files from 'directory$'/
+printline Textgrids from 'textgrid_directory$'/
+printline LTAS bandwidth = 'ltas_bandwidth' Hz
+printline Ltas files saved to 'data_directory$'/
+printline :O)

@@ -1,0 +1,32 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form LTAS
+comment Original soundfiles
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save Ltas files to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Bandwidth (Hz)
+real Bw 100
+endform
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... j
+Read from file... 'directory$'/'currentfile$'
+object_name$ = selected$ ("Sound")
+select Sound 'object_name$'
+To Ltas... bw
+ltasname$ = "'object_name$'" + "_bw'bw'"
+Write to text file... 'newdirectory$'/'ltasname$'.Ltas
+select Sound 'object_name$'
+plus Ltas 'object_name$'
+Remove
+
+endfor
+
+clearinfo
+print :O)

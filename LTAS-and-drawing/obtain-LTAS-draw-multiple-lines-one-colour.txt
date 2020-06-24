@@ -1,0 +1,55 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Draw LTAS of individual sound files in folder
+comment Sound files from
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save final picture and PDF to
+sentence Newdirectory /Users/Shared/Praat_test/Data
+comment Name of data files
+sentence Datafilename Ltas_indiv_spectra
+comment Solid, dashed or dotted line
+sentence Line_solidity Solid line
+comment Line colour
+sentence Line_colour Black
+comment Line width
+real Line_width 1
+comment Font type
+sentence Font_type Helvetica
+comment Font size
+real Font_size 12
+endform
+
+Erase all
+Select outer viewport... 0 8 0 5
+Font size... font_size
+'font_type$'
+Line width... line_width
+'line_solidity$'
+'line_colour$'
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... a
+Read from file... 'directory$'/'currentfile$'
+objectname$ = selected$ ("Sound")
+To Ltas... 100
+Draw... 0 10000 -20 60 yes Curve
+select Sound 'objectname$'
+plus Ltas 'objectname$'
+Remove
+
+endfor
+
+Marks left every... 1 10 yes yes no
+One mark left... 0 yes yes yes  
+Marks bottom every... 1 1000 yes yes no
+
+Write to praat picture file... 'newdirectory$'/'datafilename$'.prapic
+Write to PDF file... 'newdirectory$'/'datafilename$'.pdf
+
+clearinfo
+print :O)

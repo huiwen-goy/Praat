@@ -1,0 +1,22 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+ltasfile$ = "/Users/Shared/Praat_test/OrigSoundfiles/soundfile.Ltas"
+datafilename$ = "dB_per_bin_output"
+
+datadirectory$ = "/Users/Shared/Praat_test/Data"
+header$ = "Filename" + tab$ + "Bin number" + tab$ + "dB value" + tab$ + newline$
+header$ > 'datadirectory$'/'datafilename$'.txt
+
+Read from file... 'ltasfile$'
+filename$ = selected$ ("Ltas")
+number_bins = Get number of bins
+
+for x from 1 to number_bins
+
+dBvalue = Get value in bin... x
+fileappend "'datadirectory$'/'datafilename$'.txt" 'filename$''tab$''x''tab$''dBvalue''tab$''newline$'
+
+endfor
+
+clearinfo
+print :O)

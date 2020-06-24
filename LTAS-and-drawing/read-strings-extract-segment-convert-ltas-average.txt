@@ -1,0 +1,74 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form LTAS for Lombard speech stimuli
+comment List of files to measure
+sentence Stringfile /Users/Shared/Praat_test/OrigSoundfiles/strings.txt
+comment Textgrid tier to measure: 1=sentence, 2=carrier, 3=word
+real Stimuli_level 1
+comment Original sound files
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Textgrids
+sentence Textgrid_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save measurements to
+sentence Data_directory /Users/Shared/Praat_test/Data
+comment Data file name
+sentence Newfilename Ltas_log
+endform
+
+Read Strings from raw text file... 'stringfile$'
+stringfilename$ = selected$ ("Strings")
+number_of_strings = Get number of strings
+
+for a from 1 to number_of_strings
+
+select Strings 'stringfilename$'
+currentfile$ = Get string... a
+
+Open long sound file... 'directory$'/'currentfile$'.wav
+filename$ = selected$ ("LongSound")
+
+Read from file... 'textgrid_directory$'/'filename$'.TextGrid
+
+if stimuli_level = 3
+segment_start = Get start point... 3 2
+segment_end = Get end point... 3 2
+elsif stimuli_level = 2
+segment_start = Get start point... 2 2
+segment_end = Get end point... 2 2
+elsif stimuli_level = 1
+segment_start = Get start point... 1 2
+segment_end = Get end point... 1 2
+endif
+
+select LongSound 'filename$'
+Extract part... segment_start segment_end no
+Rename... 'filename$'_segment
+To Ltas... 100
+
+select LongSound 'filename$'
+plus Sound 'filename$'_segment
+plus TextGrid 'filename$'
+Remove
+
+endfor
+
+select Strings 'stringfilename$'
+Remove
+
+select all
+Average
+Write to text file... 'data_directory$'/'newfilename$'.Ltas
+
+Select outer viewport... 0 8 0 5
+Solid line
+Black
+Line width... 3
+Helvetica
+Font size... 14
+Draw... 0 10000 -20 60 yes Curve
+Marks left every... 1 10 yes yes no
+One mark left... 0 yes yes yes  
+Marks bottom every... 1 1000 yes yes no
+
+clearinfo
+print :O)

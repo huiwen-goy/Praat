@@ -1,0 +1,31 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+filelist$ = "/Users/Shared/Praat_test/OrigSoundfiles/strings.txt"
+datadirectory$ = "/Users/Shared/Praat_test/NewSoundfiles"
+dataname$ = "LTAS"
+
+Read Strings from raw text file... 'filelist$'
+Rename... selectedfiles
+number_files = Get number of strings
+
+for n to number_files
+select Strings selectedfiles
+currentfile$ = Get string... n
+Read from file... 'directory$'/'currentfile$'.wav
+endfor
+
+select Strings selectedfiles
+Remove
+
+select all
+To Ltas... 100
+Average
+Write to text file... 'datadirectory$'/'dataname$'.Ltas
+
+pause Click OK to clear object window
+select all
+Remove
+
+clearinfo
+print :O)

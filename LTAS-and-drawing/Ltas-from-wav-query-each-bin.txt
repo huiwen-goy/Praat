@@ -1,0 +1,75 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Get individual file LTAS and duration; query each bin
+comment Sound files from
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Bandwidth
+real Bw 500
+comment Save data to
+sentence Datadirectory /Users/Shared/Praat_test/Data
+comment Data filename
+sentence Datafilename bin_values
+endform
+
+header$ = "Filename" + tab$ + "duration_ms" + tab$ + "RMS" + tab$ + "Bin1_dB" + tab$ + "Bin2_dB" + tab$ + "Bin3_dB" + tab$ + "Bin4_dB" + tab$ + "Bin5_dB" + tab$ + "Bin6_dB" + tab$ + "Bin7_dB" + tab$ + "Bin8_dB" + tab$ + "Bin9_dB" + tab$ + "Bin10_dB" + tab$ + "Bin11_dB" + tab$ + "Bin12_dB" + tab$ + "Bin13_dB" + tab$ + "Bin14_dB" + tab$ + "Bin15_dB" + tab$ + "Bin16_dB" + tab$ + "Bin17_dB" + tab$ + "Bin18_dB" + tab$ + "Bin19_dB" + tab$ + "Bin20_dB" + tab$ + "Bin21_dB" + tab$ + "Bin22_dB" + tab$ + "Bin23_dB" + tab$ + "Bin24_dB" + tab$ + "Bin25_dB" + tab$ + newline$
+header$ > 'datadirectory$'/'datafilename$'.txt
+
+Create Strings as file list... list 'directory$'/*.wav
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... a
+Read from file... 'directory$'/'currentfile$'
+
+filename$ = selected$ ("Sound")
+
+select Sound 'filename$'
+dur = Get total duration
+duration = dur*1000
+rms = Get root-mean-square... 0 0
+
+To Ltas... 'bw'
+
+bin1 = Get value in bin... 1
+bin2 = Get value in bin... 2
+bin3 = Get value in bin... 3
+bin4 = Get value in bin... 4
+bin5 = Get value in bin... 5
+
+bin6 = Get value in bin... 6
+bin7 = Get value in bin... 7
+bin8 = Get value in bin... 8
+bin9 = Get value in bin... 9
+bin10 = Get value in bin... 10
+
+bin11 = Get value in bin... 11
+bin12 = Get value in bin... 12
+bin13 = Get value in bin... 13
+bin14 = Get value in bin... 14
+bin15 = Get value in bin... 15
+
+bin16 = Get value in bin... 16
+bin17 = Get value in bin... 17
+bin18 = Get value in bin... 18
+bin19 = Get value in bin... 19
+bin20 = Get value in bin... 20
+
+bin21 = Get value in bin... 21
+bin22 = Get value in bin... 22
+bin23 = Get value in bin... 23
+bin24 = Get value in bin... 24
+bin25 = Get value in bin... 25
+
+fileappend "'datadirectory$'/'datafilename$'.txt" 'filename$''tab$''duration''tab$''rms''tab$''bin1''tab$''bin2''tab$''bin3''tab$''bin4''tab$''bin5''tab$''bin6''tab$''bin7''tab$''bin8''tab$''bin9''tab$''bin10''tab$''bin11''tab$''bin12''tab$''bin13''tab$''bin14''tab$''bin15''tab$''bin16''tab$''bin17''tab$''bin18''tab$''bin19''tab$''bin20''tab$''bin21''tab$''bin22''tab$''bin23''tab$''bin24''tab$''bin25''tab$''newline$'
+
+select Sound 'filename$'
+plus Ltas 'filename$'
+Remove
+
+endfor
+
+clearinfo
+printline 'number_files' files processed
+printline :O)
