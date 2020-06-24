@@ -1,0 +1,30 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Play all soundfiles in folder (no viewing)
+comment Where are the files?
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment File extension?
+sentence Extension wav
+endform
+
+Create Strings as file list...  list 'directory$'/*.'extension$'
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+current_file$ = Get string... j
+Read from file... 'directory$'/'current_file$'
+
+filename$ = selected$ ("Sound")
+Play
+pause 'j' of 'number_files' files played
+Remove
+
+endfor
+
+select Strings list
+Remove
+
+clearinfo
+print :O)

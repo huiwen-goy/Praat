@@ -1,0 +1,32 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Read all files in folder into Object window
+comment Where are the files that you want to process? Specify folder path.
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment What file extension? wav=1, txt=2, TextGrid=3, Ltas=4
+integer File_extension 1
+endform
+
+if file_extension = 1
+Create Strings as file list... list 'directory$'/*.wav
+
+elsif file_extension = 2
+Create Strings as file list... list 'directory$'/*.txt
+
+elsif file_extension = 3
+Create Strings as file list... list 'directory$'/*.TextGrid
+
+elsif file_extension = 4
+Create Strings as file list... list 'directory$'/*.Ltas
+endif
+
+number_of_files = Get number of strings
+for i to number_of_files
+select Strings list
+current_file$ = Get string... i
+Read from file... 'directory$'/'current_file$'
+
+endfor
+
+select Strings list
+Remove

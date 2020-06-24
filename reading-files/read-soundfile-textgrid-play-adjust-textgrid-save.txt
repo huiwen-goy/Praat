@@ -1,0 +1,45 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Open soundfile and textgrid, save adjusted textgrid
+comment Original soundfiles
+sentence Soundfile_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Original textgrids
+sentence Textgrid_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save adjusted textgrids to
+sentence Newtextgrid_directory /Users/Shared/Praat_test/CheckedTextgrids
+comment Add suffix (optional)
+sentence Suffix _rev
+endform
+
+Create Strings as file list...  list 'soundfile_directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+current_file$ = Get string... j
+Read from file... 'soundfile_directory$'/'current_file$'
+filename$ = selected$ ("Sound")
+
+Read from file... 'textgrid_directory$'/'filename$'.TextGrid
+
+select Sound 'filename$'
+plus TextGrid 'filename$'
+
+Edit
+editor TextGrid 'filename$'
+
+pause Click to save changes and view next textgrid
+
+newfilename$ = "'filename$'" + "'suffix$'"
+Save TextGrid as text file... 'newtextgrid_directory$'/'newfilename$'.TextGrid
+endeditor TextGrid 'filename$'
+
+select Sound 'filename$'
+plus TextGrid 'filename$'
+Remove
+
+endfor
+
+clearinfo
+print :O)

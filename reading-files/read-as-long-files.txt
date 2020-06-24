@@ -1,0 +1,18 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Open all files as Long Sound files
+comment Where is the folder?
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+endform
+
+Create Strings as file list... list 'directory$'/*.wav
+
+number_of_files = Get number of strings
+for i to number_of_files
+select Strings list
+current_file$ = Get string... i
+Open long sound file... 'directory$'/'current_file$'
+endfor
+
+select Strings list
+Remove
