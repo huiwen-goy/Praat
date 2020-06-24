@@ -1,0 +1,32 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+newdirectory$ = "/Users/Shared/Praat_test/NewSoundfiles"
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... j
+Read from file... 'directory$'/'currentfile$'
+     
+filename$ = selected$ ("Sound")
+
+select Sound 'filename$'
+To Intensity... 100 0 yes
+original_int = Get mean... 0 0 energy
+new_int = 70
+
+select Sound 'filename$'
+Multiply... 10^((new_int - original_int)/20)
+Write to WAV file... 'newdirectory$'/'filename$'.wav
+
+endfor
+
+select all
+Remove
+
+clearinfo
+print :O)

@@ -1,0 +1,8 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+Read from file... /Users/Shared/Praat_test/OrigSoundfiles/beep.wav
+originalRMS = Get root-mean-square... 0 0
+newRMS = 0.0475
+Formula... self * newRMS / originalRMS
+
+Save as WAV file... /Users/Shared/Praat_test/NewSoundfiles/beep_v2.wav

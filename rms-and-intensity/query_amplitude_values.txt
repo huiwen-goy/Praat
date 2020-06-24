@@ -1,0 +1,35 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+datadirectory$ = "/Users/Shared/Praat_test/Data"
+
+Create Strings as file list... list 'directory$'/*.wav
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... a
+Read from file... 'directory$'/'currentfile$'
+filename$ = selected$ ("Sound")
+
+header$ = "Number" + tab$ + "Sample" + tab$ + "Amplitude" + tab$ + newline$
+header$ > 'datadirectory$'/'filename$'.txt
+
+for b from 1 to 100
+
+# gets amplitude value every 10 samples
+col_value = Get value at sample number... 0 b*10
+
+fileappend "'datadirectory$'/'filename$'.txt" 'b''tab$''col_value''tab$''newline$'
+
+endfor
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

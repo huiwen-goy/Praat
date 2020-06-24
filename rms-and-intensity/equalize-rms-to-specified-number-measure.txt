@@ -1,0 +1,94 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Equalize RMS levels
+comment Original soundfiles
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Specify new RMS
+real New_RMS 0.05
+comment Specify new sampling rate. To keep old sampling rate, type 0.
+integer Newsampling 20000
+comment Save new files to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Append suffix
+sentence Suffix _0p05
+endform
+
+Create Strings as file list... list 'directory$'/*.wav
+number_of_files = Get number of strings
+
+for b to number_of_files
+
+select Strings list
+current_file$ = Get string... b
+
+Read from file... 'directory$'/'current_file$'
+currentfilename$ = selected$ ("Sound")
+original_RMS = Get root-mean-square... 0 0
+
+if newsampling > 0
+Resample... newsampling 50
+Rename... 'currentfilename$'
+Formula... self * new_RMS/original_RMS
+
+elsif newsampling = 0
+Formula... self * new_RMS/original_RMS
+
+endif
+
+newfilename$ = "'currentfilename$'" + "'suffix$'"
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+select all
+Remove
+
+header_row$ = "Filename" + tab$ + "Original RMS (Pa)" + tab$ + "New RMS (Pa)" + tab$ + newline$
+header_row$ > 'newdirectory$'/rms_values.txt
+
+Create Strings as file list... list 'directory$'/*.wav
+number_of_files = Get number of strings
+
+for c to number_of_files
+
+select Strings list
+current_file$ = Get string... c
+Read from file... 'directory$'/'current_file$'
+
+original_RMS = Get root-mean-square... 0 0
+
+filename$ = selected$ ("Sound")
+fileappend "'newdirectory$'/rms_values.txt" 'filename$''tab$''original_RMS:10''tab$''tab$''tab$''newline$'
+
+endfor
+
+select all
+Remove
+clearinfo
+
+Create Strings as file list... list 'newdirectory$'/*.wav
+number_of_files = Get number of strings
+
+for d to number_of_files
+
+select Strings list
+current_file$ = Get string... d
+Read from file... 'newdirectory$'/'current_file$'
+
+new_measured_RMS = Get root-mean-square... 0 0
+filename$ = selected$ ("Sound")
+fileappend "'newdirectory$'/rms_values.txt" 'tab$''tab$''new_measured_RMS''tab$''newline$'
+
+endfor
+
+select all
+Remove
+
+clearinfo
+printline Equalized 'number_of_files' WAV files in 'directory$'
+printline RMS measurements located in 'newdirectory$'
+printline :O)
