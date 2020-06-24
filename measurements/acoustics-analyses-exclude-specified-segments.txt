@@ -1,0 +1,68 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+# Soundfile has three consecutive segments; only the middle segment should be measured
+
+form Measures acoustics of segment
+comment Soundfile directory
+sentence Wav_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Duration of first segment to ignore
+real dur_prior 4.0
+comment Duration of second segment to ignore
+real dur_post 2.5
+comment Data directory
+sentence Data_directory /Users/Shared/Praat_test/Data
+endform
+
+header_row$ = "Filename" + tab$ + "Duration (s)" + tab$ + "F0mean" + tab$ + "F0max" + tab$ + "F0min" + tab$ + "Intensity mean (dB)" + tab$ + "Intensity max (dB)" + tab$ + "Intensity min (dB)" + tab$ + "RMS (Pa)" + tab$ + newline$
+header_row$ > 'data_directory$'/acoustics_log.txt
+
+Create Strings as file list...  list 'wav_directory$'/*.wav
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+filename$ = Get string... a
+Open long sound file... 'wav_directory$'/'filename$'
+soundname$ = filename$ - ".wav"
+	
+select LongSound 'soundname$'
+total_duration = Get total duration
+start_point = dur_prior
+end_point = total_duration - dur_post
+
+Extract part... start_point end_point no
+Rename... segment_'soundname$'
+
+select Sound segment_'soundname$'
+
+duration = Get total duration
+rms = Get root-mean-square... 0 0
+
+To Pitch... 0.005 75 600
+
+select Sound segment_'soundname$'
+To Intensity... 100 0 yes
+
+select Pitch segment_'soundname$'
+f0mean = Get mean... 0 0 Hertz
+f0max = Get maximum... 0 0 Hertz Parabolic
+f0min = Get minimum... 0 0 Hertz Parabolic
+
+select Intensity segment_'soundname$'
+intmean = Get mean... 0 0 dB
+intmax = Get maximum... 0 0 Parabolic
+intmin = Get minimum... 0 0 Parabolic
+
+fileappend "'data_directory$'/acoustics_log.txt" 'soundname$''tab$''duration''tab$''f0mean''tab$''f0max''tab$''f0min''tab$''intmean''tab$''intmax''tab$''intmin''tab$''rms''tab$''newline$'
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline 'number_of_files' files processed. 
+printline Data written to 'data_directory$'/
+printline :O)

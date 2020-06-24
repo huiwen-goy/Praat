@@ -1,0 +1,56 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+# two folders should contain files with the same filenames
+
+form Measure duration, F0, RMS for two folders
+comment Folder One
+sentence Directory1 /Users/Shared/Praat_test/OrigSoundfiles/Folder_A
+comment Folder Two
+sentence Directory2 /Users/Shared/Praat_test/OrigSoundfiles/Folder_B
+comment Save measurements to?
+sentence Datadirectory /Users/Shared/Praat_test/Data
+endform
+
+header_row$ = "Filename" + tab$ + "duration(s) folder1" + tab$ + "F0 mean(Hz) folder1" + tab$ + "RMS folder1" + tab$ + "duration(s) folder2" + tab$ + "F0 mean(Hz) folder2" + tab$ + "RMS folder2" + tab$ + newline$
+header_row$ > 'datadirectory$'/measurements.txt
+
+Create Strings as file list... list 'directory1$'/*.wav
+number_of_files = Get number of strings
+
+for x from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... x
+Read from file... 'directory1$'/'current_file$'
+
+filename$ = current_file$ - ".wav"
+
+select Sound 'filename$'
+rms1 = Get root-mean-square... 0 0
+duration1 = Get total duration
+
+To Pitch... 0.005 75 600
+select Pitch 'filename$'
+f0mean1 = Get mean... 0 0 Hertz
+
+Read from file... 'directory2$'/'current_file$'
+
+select Sound 'filename$'
+rms2 = Get root-mean-square... 0 0
+duration2 = Get total duration
+
+To Pitch... 0.005 75 600
+select Pitch 'filename$'
+f0mean2 = Get mean... 0 0 Hertz
+
+fileappend "'datadirectory$'/measurements.txt" 'filename$''tab$''duration1''tab$''f0mean1''tab$''rms1''tab$''duration2''tab$''f0mean2''tab$''rms2''tab$''newline$'
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline 'number_of_files' files processed from each folder
+printline :O)

@@ -1,0 +1,96 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Extracts segments, measures time, intensity & spectral info
+comment Where are the sound files?
+sentence Sound_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Where are the textgrids?
+sentence Textgrid_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Where should the data be saved?
+sentence Data_directory /Users/Shared/Praat_test/Data
+comment Data file name (.txt will be automatically appended)
+sentence Data_name acoustic_measurements
+endform
+
+header$ = "Filename" + tab$ + "Segment label" + tab$ + "Duration (ms)" + tab$ + "Intensity median (dB)" + tab$ + "Intensity max (dB)" + tab$ + "Intensity min (dB)" + tab$ + "Intensity range (dB)" + tab$ + "Intensity mean (dB)" + tab$ + "Intensity SD (dB)" + tab$ + "F0 median (Hz)" + tab$ + "F0 max (Hz)" + tab$ + "F0 min (Hz)" + tab$ + "F0 range (Hz)" + tab$ + "F0 mean (Hz)" + tab$ + "F0 SD (Hz)" + tab$ + "Spectral CoG (Hz)" + tab$ + "F2 (Hz)" + tab$ + "F2 SD (Hz)" + tab$ + newline$
+header$ > 'data_directory$'/'data_name$'.txt
+
+Create Strings as file list... list 'textgrid_directory$'/*.TextGrid
+number_of_files = Get number of strings
+
+for x from 1 to number_of_files
+
+select Strings list
+currentfile$ = Get string... x
+
+Read from file... 'textgrid_directory$'/'currentfile$'
+filename$ = selected$ ("TextGrid")
+
+Open long sound file... 'sound_directory$'/'filename$'.wav
+Read from file... 'sound_directory$'/'filename$'.wav
+
+select Sound 'filename$'
+To Intensity... 100 0 yes
+select Sound 'filename$'
+To Pitch... 0.005 75 600
+select Sound 'filename$'
+To Formant (burg)... 0.0025 5 5500 0.025 50
+
+select TextGrid 'filename$'
+number_of_intervals = Get number of intervals... 1
+
+for y to number_of_intervals
+
+segment_label$ = Get label of interval... 1 y
+
+if segment_label$ <> ""
+
+begin_vowel = Get start point... 1 y
+end_vowel = Get end point... 1 y
+duration_vowel = (end_vowel - begin_vowel)*1000
+
+select Intensity 'filename$'
+intmedian = Get quantile... begin_vowel end_vowel 0.5
+intmax = Get maximum... begin_vowel end_vowel Parabolic
+intmin = Get minimum... begin_vowel end_vowel Parabolic
+intrange = intmax - intmin
+intmean = Get mean... begin_vowel end_vowel energy
+intsd = Get standard deviation... begin_vowel end_vowel
+
+select Pitch 'filename$'
+f0median = Get quantile... begin_vowel end_vowel 0.5 Hertz
+f0max = Get maximum... begin_vowel end_vowel Hertz Parabolic
+f0min = Get minimum... begin_vowel end_vowel Hertz Parabolic
+f0range = f0max - f0min
+f0mean = Get mean... begin_vowel end_vowel Hertz
+f0sd = Get standard deviation... begin_vowel end_vowel Hertz
+
+select Formant 'filename$'
+f2mean = Get mean... 2 begin_vowel end_vowel Hertz
+f2sd = Get standard deviation... 2 begin_vowel end_vowel Hertz
+
+select LongSound 'filename$'
+Extract part... begin_vowel end_vowel no
+Rename... 'filename$'_'segment_label$'
+finalname$ = selected$ ("Sound")
+select Sound 'finalname$'
+To Spectrum... yes
+cog = Get centre of gravity... 2.0
+
+fileappend "'data_directory$'/'data_name$'.txt" 'finalname$''tab$''segment_label$''tab$''duration_vowel''tab$''intmedian''tab$''intmax''tab$''intmin''tab$''intrange''tab$''intmean''tab$''intsd''tab$''f0median''tab$''f0max''tab$''f0min''tab$''f0range''tab$''f0mean''tab$''f0sd''tab$''cog''tab$''f2mean''tab$''f2sd''tab$''newline$'
+
+endif
+
+select TextGrid 'filename$'
+
+endfor
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline 'number_of_files' files measured
+printline Measurements saved to 'data_directory$'/
+print :O)

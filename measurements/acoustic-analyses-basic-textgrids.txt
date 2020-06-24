@@ -1,0 +1,60 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Measures acoustics of sentences
+comment Original WAV files
+sentence Wav_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Textgrids
+sentence Textgrid_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save measurements to
+sentence Data_directory /Users/Shared/Praat_test/Data
+endform
+
+header_row$ = "Filename" + tab$ + "Sentence duration (ms)" + tab$ + "Sentence F0mean" + tab$ + "Sentence F0max" + tab$ + "Sentence F0min" + tab$ + "Sentence intensity mean (dB)" + tab$ + "Sentence intensity max (dB)" + tab$ + "Sentence intensity min (dB)" + tab$ + newline$
+
+header_row$ > 'data_directory$'/acoustics_log.txt
+
+Create Strings as file list...  list 'wav_directory$'/*.wav
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+filename$ = Get string... a
+Read from file... 'wav_directory$'/'filename$'
+soundname$ = filename$ - ".wav"
+	
+select Sound 'soundname$'
+To Pitch... 0.005 75 600
+
+select Sound 'soundname$'
+To Intensity... 100 0 yes
+
+Read from file... 'textgrid_directory$'/'soundname$'.TextGrid
+
+select TextGrid 'soundname$'
+begin_sentence = Get start point... 1 2
+end_sentence = Get end point... 1 3
+
+duration_sentence = end_sentence - begin_sentence
+
+select Pitch 'soundname$'
+f0mean_sentence = Get mean... begin_sentence end_sentence Hertz
+f0max_sentence = Get maximum... begin_sentence end_sentence Hertz Parabolic
+f0min_sentence = Get minimum... begin_sentence end_sentence Hertz Parabolic
+
+select Intensity 'soundname$'
+int_sentence_mean = Get mean... begin_sentence end_sentence dB
+int_sentence_max = Get maximum... begin_sentence end_sentence Parabolic
+int_sentence_min = Get minimum... begin_sentence end_sentence Parabolic
+
+fileappend "'data_directory$'/acoustics_log.txt" 'soundname$''tab$''duration_sentence''tab$''f0mean_sentence''tab$''f0max_sentence''tab$''f0min_sentence''tab$''int_sentence_mean''tab$''int_sentence_max''tab$''int_sentence_min''tab$''newline$'
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline 'number_of_files' files processed. Data written to 'data_directory$'/
+printline :O)

@@ -1,0 +1,43 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Measure duration, intensity, RMS
+comment Where are the sound files to be measured?
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save measurements to?
+sentence Datadirectory /Users/Shared/Praat_test/Data
+comment Data filename?
+sentence Datafilename duration_RMS_intensity_measurements
+endform
+
+header_row$ = "Filename" + tab$ + "duration(s)" + tab$ + "RMS (Pa)" + tab$ + "mean_intensity(dB)" + tab$ + newline$
+header_row$ > 'datadirectory$'/'datafilename$'.txt
+
+Create Strings as file list... list 'directory$'/*.wav
+number_of_files = Get number of strings
+
+for x from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... x
+filename$ = current_file$ - ".wav"
+
+Read from file... 'directory$'/'current_file$'
+select Sound 'filename$'
+duration = Get total duration
+rms = Get root-mean-square... 0 0
+
+select Sound 'filename$'
+To Intensity... 100 0 yes
+mean_int = Get mean... 0 0 energy
+
+fileappend "'datadirectory$'/'datafilename$'.txt" 'filename$''tab$''duration:5''tab$''rms:6''tab$''mean_int:3''tab$''newline$'
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline Measurements saved in 'datadirectory$'/
+printline :O)

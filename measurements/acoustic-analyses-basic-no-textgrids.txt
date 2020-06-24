@@ -1,0 +1,42 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Acoustic measurements
+comment Original WAV files
+sentence Wav_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save data to?
+sentence Data_directory /Users/Shared/Praat_test/Data
+endform
+
+header_row$ = "Filename" + tab$ + "Duration(s)" + tab$ + "F0mean(Hz)" + tab$ + "F0sd(Hz)" + tab$ + "RMS(Pa)" + tab$ + newline$
+header_row$ > 'data_directory$'/acoustics_log.txt
+
+Create Strings as file list...  list 'wav_directory$'/*.wav
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+filename$ = Get string... a
+Read from file... 'wav_directory$'/'filename$'
+soundname$ = filename$ - ".wav"
+	
+select Sound 'soundname$'
+duration_sentence = Get total duration
+rms = Get root-mean-square... 0 0
+
+To Pitch... 0.005 75 600
+f0mean_sentence = Get mean... 0 0 Hertz
+f0sd = Get standard deviation... 0 0 Hertz
+
+fileappend "'data_directory$'/acoustics_log.txt" 'soundname$''tab$''duration_sentence''tab$''f0mean_sentence''tab$''f0sd''tab$''rms''tab$''newline$'
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline 'number_of_files' files processed. 
+printline Data written to 'data_directory$'/
+printline :O)

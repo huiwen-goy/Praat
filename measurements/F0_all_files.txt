@@ -1,0 +1,39 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+datadirectory$ = "/Users/Shared/Praat_test/Data"
+
+header_row$ = "Filename" + tab$ + "duration(msec)" + tab$ + "f0mean" + tab$ + "f0max" + tab$ + "f0min" + tab$ + "f0sd" + tab$ + newline$
+header_row$ > 'datadirectory$'/F0_measurements.txt
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... j
+Read from file... 'directory$'/'currentfile$'
+object_name$ = selected$ ("Sound")
+dur = Get total duration
+duration = dur * 1000
+
+select Sound 'object_name$'
+To Pitch... 0.005 75 600
+
+select Pitch 'object_name$'
+f0mean = Get mean... 0 0 Hertz
+f0max = Get maximum... 0 0 Hertz Parabolic
+f0min = Get minimum... 0 0 Hertz Parabolic
+f0sd = Get standard deviation... 0 0 Hertz
+
+fileappend "'datadirectory$'/F0_measurements.txt" 'object_name$''tab$''duration:2''tab$''f0mean:2''tab$''f0max:2''tab$''f0min:2''tab$''f0sd:2''tab$''newline$'
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

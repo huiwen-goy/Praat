@@ -1,0 +1,31 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+band_directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+data_directory$ = "/Users/Shared/Praat_test/Data"
+datafilename$ = "rms_log"
+
+header$ = "Filename" + tab$ + "RMS" + newline$
+header$ > 'data_directory$'/'datafilename$'.txt
+
+Create Strings as file list... list 'band_directory$'/*.wav
+number_files = Get number of strings
+
+for a from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... a
+Read from file... 'band_directory$'/'currentfile$'
+currentfilename$ = selected$ ("Sound")
+
+rms = Get root-mean-square... 0 0
+
+fileappend "'data_directory$'/'datafilename$'.txt" 'currentfilename$''tab$''rms''newline$'
+
+select Sound 'currentfilename$'
+Remove
+
+endfor
+
+clearinfo
+print :O)
+

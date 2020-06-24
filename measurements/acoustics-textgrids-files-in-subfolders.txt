@@ -1,0 +1,93 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+folder_list$ = "/Users/Shared/Praat_test/OrigSoundfiles/folderlist.txt"
+folder_directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+data_directory$ = "/Users/Shared/Praat_test/Data"
+
+header$ = "object_name" + tab$ + "sentence_dur" + tab$ + "sentence_f0mean" + tab$ + "sentence_f0max" + tab$ + "sentence_f0min" + tab$ + "sentence_f0sd" + tab$ + "sentence_intmean" + tab$ + "sentence_intmax" + tab$ + "sentence_intmin" + tab$ + "vowel_dur" + tab$ + "vowel_f0mean" + tab$ + "vowel_f0max" + tab$ + "vowel_f0min" + tab$ + "vowel_f0sd" + tab$ + "vowel_intmean" + tab$ + "vowel_intmax" + tab$ + "vowel_intmin" + tab$ + "f1mean" + tab$ + "f2mean" + tab$ + "f3mean" + tab$ + newline$
+header$ > 'data_directory$'/acoustics.txt
+
+Read Strings from raw text file... 'folder_list$'
+number_folders = Get number of strings
+
+for a from 1 to number_folders
+
+select Strings folderlist
+currentfolder$ = Get string... a
+
+Create Strings as file list... list 'folder_directory$'/'currentfolder$'/*.wav
+number_files = Get number of strings
+
+for x from 1 to number_files
+
+select Strings list
+current_file$ = Get string... x
+
+Read from file... 'folder_directory$'/'currentfolder$'/'current_file$'
+object_name$ = selected$ ("Sound")
+
+select Sound 'object_name$'
+To Pitch... 0.005 75 600
+
+select Sound 'object_name$'
+To Intensity... 100 0 yes
+
+select Sound 'object_name$'
+To Formant (burg)... 0.0025 5 5000 0.025 50
+
+Read from file... 'folder_directory$'/'currentfolder$'/'object_name$'.TextGrid
+
+select TextGrid 'object_name$'
+
+begin_sentence = Get start point... 1 2
+end_sentence = Get end point... 1 2
+sentence_dur = (end_sentence - begin_sentence)*1000
+
+begin_vowel = Get start point... 2 2
+end_vowel = Get end point... 2 2
+vowel_dur = (end_vowel - begin_vowel)*1000
+
+select Pitch 'object_name$'
+
+sentence_f0mean = Get mean... begin_sentence end_sentence Hertz
+sentence_f0max = Get maximum... begin_sentence end_sentence Hertz Parabolic
+sentence_f0min = Get minimum... begin_sentence end_sentence Hertz Parabolic
+sentence_f0sd = Get standard deviation... begin_sentence end_sentence Hertz
+
+vowel_f0mean = Get mean... begin_vowel end_vowel Hertz
+vowel_f0max = Get maximum... begin_vowel end_vowel Hertz Parabolic
+vowel_f0min = Get minimum... begin_vowel end_vowel Hertz Parabolic
+vowel_f0sd = Get standard deviation... begin_vowel end_vowel Hertz
+
+select Intensity 'object_name$'
+
+sentence_intmean = Get mean... begin_sentence end_sentence energy
+sentence_intmax = Get maximum... begin_sentence end_sentence Parabolic
+sentence_intmin = Get minimum... begin_sentence end_sentence Parabolic
+
+vowel_intmean = Get mean... begin_vowel end_vowel energy
+vowel_intmax = Get maximum... begin_vowel end_vowel Parabolic
+vowel_intmin = Get minimum... begin_vowel end_vowel Parabolic
+
+select Formant 'object_name$'
+
+f1mean = Get mean... 1 begin_vowel end_vowel Hertz
+f2mean = Get mean... 2 begin_vowel end_vowel Hertz
+f3mean = Get mean... 3 begin_vowel end_vowel Hertz
+
+fileappend "'data_directory$'/acoustics.txt" 'object_name$''tab$''sentence_dur''tab$''sentence_f0mean''tab$''sentence_f0max''tab$''sentence_f0min''tab$''sentence_f0sd''tab$''sentence_intmean''tab$''sentence_intmax''tab$''sentence_intmin''tab$''vowel_dur''tab$''vowel_f0mean''tab$''vowel_f0max''tab$''vowel_f0min''tab$''vowel_f0sd''tab$''vowel_intmean''tab$''vowel_intmax''tab$''vowel_intmin''tab$''f1mean''tab$''f2mean''tab$''f3mean''tab$''newline$'
+
+select all
+minus Strings folderlist
+minus Strings list
+Remove
+
+endfor
+
+select all
+minus Strings folderlist
+
+endfor
+
+clearinfo
+print :O)

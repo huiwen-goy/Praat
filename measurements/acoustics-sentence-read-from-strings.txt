@@ -1,0 +1,51 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Speech acoustics
+comment Strings list with filenames (no extensions)
+sentence Strings_list /Users/Shared/Praat_test/OrigSoundfiles/strings.txt
+comment Where are the sound files?
+sentence Sound_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save data to
+sentence Data_directory /Users/Shared/Praat_test/Data
+comment Data filename
+sentence Datafilename acoustics_speech
+endform
+
+header$ = "Filename" + tab$ + "Duration (ms)" + tab$ + "RMS" + tab$ + "Intmean (dB)" + tab$ + "F0mean (Hz)" + tab$ + "F0 SD (Hz)" + tab$ + newline$
+
+header$ > 'data_directory$'/'datafilename$'.txt
+
+Read Strings from raw text file... 'strings_list$'
+listname$ = selected$ ("Strings")
+number_of_files = Get number of strings
+
+for x from 1 to number_of_files
+
+select Strings 'listname$'
+currentfile$ = Get string... x
+
+Read from file... 'Sound_directory$'/'currentfile$'.wav
+currentfilename$ = selected$ ("Sound")
+
+duration = Get total duration
+rms = Get root-mean-square... 0 0
+
+select Sound 'currentfilename$'
+To Intensity... 75 0 yes
+intmean = Get mean... 0 0 energy
+
+select Sound 'currentfilename$'
+To Pitch... 0 75 600
+f0mean = Get mean... 0 0 Hertz
+f0sd = Get standard deviation... 0 0 Hertz
+
+fileappend "'data_directory$'/'datafilename$'.txt" 'currentfile$''tab$''duration''tab$''rms''tab$''intmean''tab$''f0mean''tab$''f0sd''tab$''newline$'
+
+select all
+minus Strings 'listname$'
+Remove
+
+endfor
+
+clearinfo
+printline :O)

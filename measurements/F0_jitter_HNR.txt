@@ -1,0 +1,57 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+
+header_row$ = "Filename" + tab$ + "voweldur" + tab$ + "f0mean" + tab$ + "numberperiods" + tab$ + "meanperiod" + tab$ + "stdevperiod" + tab$ + "jitterlocal" + tab$ + "jitterlocabs" + tab$ + "jitterRAP" + tab$ + "jitterPPQ5" + tab$ + "jitterDDP" + tab$ + "aveHNR" + tab$ + "sdHNR" + tab$+ "minHNR" + tab$ + "maxHNR" + tab$ + newline$
+header_row$ > 'directory$'/F0_jitter_HNR_measurements.txt
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... 'j'
+Read from file... 'directory$'/'currentfile$'
+     
+object_name$ = selected$ ("Sound")
+filename$ = object_name$
+
+select Sound 'object_name$'
+To Pitch... 0.005 75 600
+
+select Sound 'object_name$'
+To PointProcess (periodic, cc)... 75 600
+
+select Sound 'object_name$'
+To Harmonicity (cc)... 0.01 75 0.1 1
+
+select Pitch 'object_name$'
+f0mean = Get mean... 0 0 Hertz
+
+select PointProcess 'object_name$'
+voweldur = Get total duration
+numberperiods = Get number of periods... 0 0 0.0001 0.02 1.3
+meanperiod = Get mean period... 0 0 0.0001 0.02 1.3
+stdevperiod = Get stdev period... 0 0 0.0001 0.02 1.3
+jitterlocal = Get jitter (local)... 0 0 0.0001 0.02 1.3
+jitterlocabs = Get jitter (local, absolute)... 0 0 0.0001 0.02 1.3
+jitterRAP = Get jitter (rap)... 0 0 0.0001 0.02 1.3
+jitterPPQ5 = Get jitter (ppq5)... 0 0 0.0001 0.02 1.3
+jitterDDP = Get jitter (ddp)... 0 0 0.0001 0.02 1.3
+
+select Harmonicity 'object_name$'
+aveHNR = Get mean... 0 0
+sdHNR = Get standard deviation... 0 0
+minHNR = Get minimum... 0 0 Parabolic
+maxHNR = Get maximum... 0 0 Parabolic
+	      
+fileappend "'directory$'/F0_jitter_HNR_measurements.txt" 'filename$''tab$''voweldur:2''tab$''f0mean:2''tab$''numberperiods''tab$''meanperiod:6''tab$''stdevperiod:6''tab$''jitterlocal:4''tab$''jitterlocabs:10''tab$''jitterRAP:4''tab$''jitterPPQ5:4''tab$''jitterDDP:4''tab$''aveHNR:4''tab$''sdHNR:4''tab$''minHNR:4''tab$''maxHNR:4''tab$''newline$'
+
+select all
+minus Strings list
+Remove
+endfor
+
+clearinfo
+print :O)
+

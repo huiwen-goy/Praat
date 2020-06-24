@@ -1,0 +1,30 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+datadirectory$ = "/Users/Shared/Praat_test/Data"
+
+header_row$ = "Filename" + tab$ + "duration" + newline$
+header_row$ > 'datadirectory$'/duration-log.txt
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... j
+
+Read from file... 'directory$'/'currentfile$'
+Get total duration
+
+duration = Get total duration
+filename$ = selected$ ("Sound")
+
+fileappend "'datadirectory$'/duration-log.txt" 'filename$''tab$''duration''newline$'
+
+select Sound 'filename$'
+Remove
+
+endfor
+
+clearinfo
+print :O)

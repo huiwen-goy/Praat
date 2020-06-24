@@ -1,0 +1,75 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Vowel acoustics
+comment Strings list with filenames (no extensions)
+sentence Strings_list /Users/Shared/Praat_test/OrigSoundfiles/strings.txt
+comment Where are the sound files?
+sentence Sound_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save data to
+sentence Data_directory /Users/Shared/Praat_test/Data/
+comment Data filename
+sentence Datafilename acoustics_vowels
+endform
+
+header$ = "Filename" + tab$ + "Duration (ms)" + tab$ + "RMS" + tab$ + "Intmean (dB)" + tab$ + "F0mean (Hz)" + tab$ + "F0 SD (Hz)" + tab$ + "F1mean (Hz)" + tab$ + "Vowel F2mean (Hz)" + tab$ + "Vowel F3mean (Hz)" + tab$ + "jitterlocal (%)" + tab$ + "jitterlocal_abs (micros)" + tab$ + "jitterRAP (%)" + tab$ + "aveHNR" + tab$ + "shimmerloc (%)" + tab$ + "shimmerlocal (dB)" + tab$ + "shimmerAPQ5" + tab$ + "shimmerAPQ11" + tab$ + newline$
+
+header$ > 'data_directory$'/'datafilename$'.txt
+
+Read Strings from raw text file... 'strings_list$'
+listname$ = selected$ ("Strings")
+number_of_files = Get number of strings
+
+for x from 1 to number_of_files
+
+select Strings 'listname$'
+currentfile$ = Get string... x
+
+Read from file... 'Sound_directory$'/'currentfile$'.wav
+currentfilename$ = selected$ ("Sound")
+
+duration = Get total duration
+rms = Get root-mean-square... 0 0
+
+select Sound 'currentfilename$'
+To Intensity... 75 0 yes
+intmean = Get mean... 0 0 energy
+
+select Sound 'currentfilename$'
+To Pitch... 0 75 600
+f0mean = Get mean... 0 0 Hertz
+f0sd = Get standard deviation... 0 0 Hertz
+
+select Sound 'currentfilename$'
+To Formant (burg)... 0 4 5500 0.025 50
+f1mean = Get mean... 1 0 0 Hertz
+f2mean = Get mean... 2 0 0 Hertz
+f3mean = Get mean... 3 0 0 Hertz
+
+select Sound 'currentfilename$'
+To PointProcess (periodic, cc)... 75 600
+jitterlocal = Get jitter (local)... 0 0 0.0001 0.02 1.3
+jitterlocalabs_sec = Get jitter (local, absolute)... 0 0 0.0001 0.02 1.3
+jitterlocal_abs = jitterlocalabs_sec * 1000000
+jitterRAP = Get jitter (rap)... 0 0 0.0001 0.02 1.3
+
+select Sound 'currentfilename$'
+To Harmonicity (cc)... 0.01 75 0.1 1
+aveHNR = Get mean... 0 0
+
+select Sound 'currentfilename$'
+plus PointProcess 'currentfilename$'
+shimmerloc = Get shimmer (local)... 0 0 0.0001 0.2 1.3 1.6
+shimmerlocdB = Get shimmer (local_dB)... 0 0 0.0001 0.2 1.3 1.6
+shimmerAPQ5 = Get shimmer (apq5)... 0 0 0.0001 0.2 1.3 1.6
+shimmerAPQ11 = Get shimmer (apq11)... 0 0 0.0001 0.2 1.3 1.6
+
+fileappend "'data_directory$'/'datafilename$'.txt" 'currentfile$''tab$''duration''tab$''rms''tab$''intmean''tab$''f0mean''tab$''f0sd''tab$''f1mean''tab$''f2mean''tab$''f3mean''tab$''jitterlocal''tab$''jitterlocal_abs''tab$''jitterRAP''tab$''aveHNR''tab$''shimmerloc''tab$''shimmerlocdB''tab$''shimmerAPQ5''tab$''shimmerAPQ11''tab$''newline$'
+
+select all
+minus Strings 'listname$'
+Remove
+
+endfor
+
+clearinfo
+printline :O)
