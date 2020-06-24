@@ -1,0 +1,35 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Filter
+comment Low-pass filter at (Hz)
+real Filter 8000
+comment Original soundfiles
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new files to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Append suffix
+sentence Suffix _LPF8000
+endform
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+for j from 1 to number_files
+
+select Strings list
+current_file$ = Get string... j
+Read from file... 'directory$'/'current_file$'
+filename$ = selected$ ("Sound")
+
+Filter (pass Hann band)... 0 filter 100
+
+newfilename$ = "'filename$'" + "'suffix$'"
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+endfor
+
+select all
+minus Strings list
+Remove
+
+clearinfo
+print :O)
