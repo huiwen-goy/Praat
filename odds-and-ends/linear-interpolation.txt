@@ -1,0 +1,26 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Linear interpolation
+comment Known point A
+real Ax 
+real Ay 
+comment Known point B
+real Bx 
+real By 
+comment In-between point Cx
+real Cx 
+endform
+
+cy = ay - (ay - by)*(ax - cx) / (ax - bx)
+
+clearinfo
+printline Ax = 'ax'
+printline Cx = 'cx'
+printline Bx = 'bx'
+printline
+printline Ay = 'ay'
+printline By = 'by'
+printline
+printline Interpolated value, Cy = 'cy'
+printline
+printline :O)
