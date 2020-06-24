@@ -1,0 +1,42 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+original_directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+new_directory$ = "/Users/Shared/Praat_test/NewSoundfiles"
+f0_shift = 60.0
+suffix$ = "_plus60Hz"
+
+Create Strings as file list... original 'original_directory$'/*.wav
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings original
+currentfile$ = Get string... a
+Read from file... 'original_directory$'/'currentfile$'
+
+filename$ = selected$ ("Sound")
+To Pitch (cc)... 0 75 15 yes 0.03 0.45 0.01 0.35 0.14 600
+Down to PitchTier
+Shift frequencies... 0 1000 'f0_shift' Hertz
+
+select Sound 'filename$'
+To Manipulation... 0.01 75 600
+
+select PitchTier 'filename$'
+plus Manipulation 'filename$'
+Replace pitch tier
+
+select Manipulation 'filename$'
+Get resynthesis (overlap-add)
+newfilename$ = "'filename$'" + "'suffix$'"
+Save as WAV file... 'new_directory$'/'newfilename$'.wav
+
+select all
+minus Strings original
+Remove
+
+endfor
+
+clearinfo
+printline 'number_of_files' files processed
+printline :O)

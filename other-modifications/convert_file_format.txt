@@ -1,0 +1,25 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+newdirectory$ = "/Users/Shared/Praat_test/NewSoundfiles"
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+current_file$ = Get string... j
+Read from file... 'directory$'/'current_file$'
+filename$ = selected$ ("Sound")
+
+Write to AIFF file... 'newdirectory$'/'filename$'.aiff
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

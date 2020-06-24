@@ -1,0 +1,44 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Combine speech and noise in order of filenames
+comment Sound directory A
+sentence DirectoryA /Users/Shared/Praat_test/OrigSoundfiles/Folder_A
+comment Sound directory B
+sentence DirectoryB /Users/Shared/Praat_test/OrigSoundfiles/Folder_B
+comment Save new files to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list... listA 'directoryA$'/*.wav
+number_filesA = Get number of strings
+
+Create Strings as file list... listB 'directoryB$'/*.wav
+
+for a from 1 to number_filesA
+
+select Strings listA
+currentfileA$ = Get string... a
+Read from file... 'directoryA$'/'currentfileA$'
+soundA$ = selected$ ("Sound")
+
+select Strings listB
+currentfileB$ = Get string... a
+Read from file... 'directoryB$'/'currentfileB$'
+soundB$ = selected$ ("Sound")
+
+select Sound 'soundA$'
+Formula... self [col] + Sound_'soundB$' [col]
+
+newfilename$ = "'soundA$'" + "_" + "'soundB$'"
+
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+select all
+minus Strings listA
+minus Strings listB
+Remove
+
+endfor
+
+clearinfo
+printline :O)
