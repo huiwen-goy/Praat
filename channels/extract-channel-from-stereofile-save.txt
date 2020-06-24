@@ -1,0 +1,43 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Extract channel from stereo file
+comment Original soundfiles
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles/stereofiles
+comment Save new files to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Extract left or right channel? Type in L or R
+sentence Channel L
+comment Add optional suffix
+sentence Suffix _left
+endform
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_of_files = Get number of strings
+
+for j from 1 to number_of_files
+
+select Strings list
+currentfile$ = Get string... j
+Read from file... 'directory$'/'currentfile$'
+filename$ = currentfile$ - ".wav"
+
+select Sound 'filename$'
+if channel$ = "L"
+Extract left channel
+elsif channel$ = "R"
+Extract right channel
+endif
+
+newfilename$ = "'filename$'" + "'suffix$'"
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+printline :O)
+printline 'number_of_files' files processed
+printline New mono files saved to 'newdirectory$'/
