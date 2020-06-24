@@ -1,0 +1,52 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+# textgrid intervals of interest should contain a label; new files will be named using these labels
+
+form Create matching silent segments from textgrid info
+comment Textgrid folder
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new silence files to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Sampling rate
+real Sampling 24414
+endform
+
+Create Strings as file list...  list 'directory$'/*.TextGrid
+numberfiles = Get number of strings
+
+for j from 1 to numberfiles
+
+select Strings list
+currentfile$ = Get string... j
+
+Read from file... 'directory$'/'currentfile$'
+filename$ = selected$ ("TextGrid")
+number_of_intervals = Get number of intervals... 3
+
+for k from 1 to number_of_intervals
+
+select TextGrid 'filename$'
+interval_label$ = Get label of interval... 3 k
+
+if interval_label$ <> ""
+
+startpoint = Get start point... 3 k
+endpoint = Get end point... 3 k
+duration = endpoint - startpoint
+
+Create Sound from formula... 'interval_label$' 1 0 duration sampling 0
+newfilename$ = "'filename$'" + "_" + "'interval_label$'"
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+endif
+
+endfor
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

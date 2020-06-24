@@ -1,0 +1,46 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+# tone duration currently fixed at 650 ms; words annotated using textgrids; generated tones match RMS of annotated words
+
+form Create 1000Hz tones
+comment Where are the sound files?
+sentence Sound_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Where are the textgrids?
+sentence Textgrid_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Where to save tones?
+sentence Tone_directory /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list... list 'sound_directory$'/*.wav
+number_of_files = Get number of strings
+
+for j from 1 to number_of_files
+
+select Strings list
+currentfile$ = Get string... j
+
+Read from file... 'sound_directory$'/'currentfile$'
+filename$ = selected$ ("Sound")
+
+Read from file... 'textgrid_directory$'/'filename$'.TextGrid
+wordbegin = Get start point... 3 2
+wordend = Get end point... 3 2
+
+select Sound 'filename$'
+rms = Get root-mean-square... wordbegin wordend
+
+tone_name$ = "'filename$'" + "_1000Hz"
+Create Sound from formula... 'tone_name$' 1 0 0.65 24414 1/2*sin(2*pi*1000*x)
+select Sound 'tone_name$'
+rms_tone = Get root-mean-square... 0 0
+Formula... self*rms/rms_tone
+Save as WAV file... 'tone_directory$'/'tone_name$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

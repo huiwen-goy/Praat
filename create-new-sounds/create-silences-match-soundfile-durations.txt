@@ -1,0 +1,37 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Create matching silent segments
+comment Measure files from
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new silent files to
+sentence Newdirectory  /Users/Shared/Praat_test/NewSoundfiles
+comment Sampling rate of silence files
+real Sampling 24414
+comment Add suffix
+sentence Suffix _silence
+endform
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... j
+Read from file... 'directory$'/'currentfile$'
+duration = Get total duration
+
+filename$ = selected$ ("Sound")
+newfilename$ = "'filename$'" + "'suffix$'"
+
+Create Sound... silence 0 duration sampling 0
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)
