@@ -1,0 +1,60 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Concatenate soundfiles with silence inserted between files
+comment Original files
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save concatenated file to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Duration of leading silence before first file (sec)
+real Silence_lead 1.0
+comment Duration of silence between subsequent files (sec)
+real Silence_dur 0.5
+comment Duration of trailing silence after last file (sec)
+real Silence_trail 1.0
+comment Sampling rate
+real Sampling 24414
+comment New filename
+sentence Newfilename concatfile
+endform
+
+Create Sound... silence 0 silence_lead sampling 0
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_of_files = Get number of strings
+
+for x from 1 to number_of_files
+
+select Strings list
+currentfile$ = Get string... x
+
+Read from file... 'directory$'/'currentfile$'
+Create Sound... silence 0 silence_dur sampling 0
+
+endfor
+
+select Strings list
+Remove
+
+select all
+Concatenate
+
+select all
+minus Sound chain
+Remove
+
+Create Sound... silence 0 silence_trail sampling 0
+Rename... endsilence
+
+select Sound chain
+plus Sound endsilence
+
+Concatenate
+
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+select all
+minus Sound chain
+Remove
+
+clearinfo
+print :O)

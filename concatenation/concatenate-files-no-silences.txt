@@ -1,0 +1,39 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Concatenate soundfiles
+comment Where are the soundfiles?
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save concatenated file to?
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Sampling rate?
+real Sampling 24414
+comment New filename?
+sentence Newfilename concatfile
+endform
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for x from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... x
+Read from file... 'directory$'/'currentfile$'
+
+endfor
+
+select Strings list
+Remove
+
+select all
+Concatenate
+
+select Sound chain
+Write to WAV file... 'newdirectory$'/'newfilename$'.wav
+
+select all
+Remove
+
+clearinfo
+printline :O)
+printline 'number_files' files concatenated

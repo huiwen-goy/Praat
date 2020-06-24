@@ -1,0 +1,35 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Concatenate same file multiple times
+comment Select file
+sentence Original_file /Users/Shared/Praat_test/OrigSoundfiles/beep.wav
+comment How many times?
+natural Number_repetitions 10
+comment Save new file to folder
+sentence New_folder /Users/Shared/Praat_test/NewSoundfiles
+comment New filename
+sentence Newfilename beep2
+endform
+
+Read from file... 'original_file$'
+current_filename$ = selected$ ("Sound")
+original_duration = Get total duration
+
+for i to number_repetitions
+select Sound 'current_filename$'
+Copy... copy
+endfor
+
+select all
+minus Sound 'current_filename$'
+Concatenate
+Rename... 'newfilename$'
+Write to WAV file... 'new_folder$'/'newfilename$'.wav
+
+select all
+minus Sound 'newfilename$'
+Remove
+
+clearinfo
+printline "'current_filename$'" concatenated 'number_repetitions' times
+printline :O)
