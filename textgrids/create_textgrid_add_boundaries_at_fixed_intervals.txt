@@ -1,0 +1,53 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+newdirectory$ = "/Users/Shared/Praat_test/NewSoundfiles"
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_files = Get number of strings
+
+for j from 1 to number_files
+
+select Strings list
+current_file$ = Get string... j
+
+Read from file... 'directory$'/'current_file$'
+filename$ = selected$ ("Sound")
+
+select Sound 'filename$'
+To TextGrid... sentence
+
+end_time = Get end time
+
+select Sound 'filename$'
+plus TextGrid 'filename$'
+Edit
+editor TextGrid 'filename$'
+
+Move cursor to... 0.001
+Move cursor to nearest zero crossing
+Add on tier 1
+
+repeat
+
+## specify step size below (in seconds) ##
+move_cursor = 0.5
+cursor = Get cursor
+Move cursor by... 'move_cursor'
+# Move cursor to nearest zero crossing
+Add on tier 1
+
+until cursor >= end_time - 2*'move_cursor'
+
+select TextGrid 'filename$'
+Save TextGrid as text file... 'newdirectory$'/'filename$'.TextGrid
+
+endeditor TextGrid 'filename$'
+select Sound 'filename$'
+plus TextGrid 'filename$'
+Remove
+
+endfor
+
+clearinfo
+print :O)

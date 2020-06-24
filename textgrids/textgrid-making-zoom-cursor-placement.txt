@@ -1,0 +1,42 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Textgrid making
+comment Where are the soundfiles?
+sentence Sounddirectory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save textgrids to?
+sentence Textgriddirectory /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list... list 'sounddirectory$'/*.wav
+
+number_of_files = Get number of strings
+for x from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... x
+
+Read from file... 'sounddirectory$'/'current_file$'
+object_name$ = selected$ ("Sound")
+To TextGrid... "word"
+
+plus Sound 'object_name$'
+Edit
+editor TextGrid 'object_name$'
+Move cursor to... 4.0
+Move cursor to nearest zero crossing
+Zoom... 3.5 4.5
+
+pause Mark word onset!
+
+Save TextGrid as text file... 'textgriddirectory$'/'object_name$'.TextGrid
+
+endeditor
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

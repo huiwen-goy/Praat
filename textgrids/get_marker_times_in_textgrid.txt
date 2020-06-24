@@ -1,0 +1,30 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+datadirectory$ = "/Users/Shared/Praat_test/Data"
+
+header_row$ = "filename" + tab$ + "marker1" + tab$ + "marker2" + tab$ + newline$ 
+header_row$ > 'datadirectory$'/marker-log.txt
+
+Create Strings as file list...  list 'directory$'/*.TextGrid
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'directory$'/'current_file$'
+filename$ = selected$ ("TextGrid")
+marker1 = Get start point... 1 2
+marker2 = Get end point... 1 2
+
+fileappend "'datadirectory$'/marker-log.txt" 'filename$''tab$''marker1''tab$''marker2''tab$''newline$'
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

@@ -1,0 +1,47 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Annotate sound files
+comment Where are the sound files?
+sentence Sound_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Where are the old textgrids?
+sentence Old_textgrid_directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Where to save new textgrids?
+sentence New_textgrid_directory /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list... list 'Sound_directory$'/*.wav
+
+number_of_files = Get number of strings
+for x from 1 to number_of_files
+
+select Strings list
+currentfile$ = Get string... x
+
+Read from file... 'sound_directory$'/'currentfile$'
+filename$ = selected$ ("Sound")
+
+Read from file... 'old_textgrid_directory$'/'filename$'.TextGrid
+
+select Sound 'filename$'
+plus TextGrid 'filename$'
+
+View & Edit
+editor TextGrid 'filename$'
+
+Add interval tier... 6 wv
+
+pause Add markers
+
+newfilename$ = "'filename$'" + "_wv"
+Save TextGrid as text file... 'New_textgrid_directory$'/'newfilename$'.TextGrid
+
+endeditor
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

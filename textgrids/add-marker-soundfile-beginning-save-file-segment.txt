@@ -1,0 +1,59 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Adds marker at specified time after beginning (at closest zero crossing)
+comment Add marker at time (s)
+real Timepoint 0.2
+comment Original soundfiles
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new textgrids to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Optional prefix for all new files
+sentence Prefix 
+comment Optional suffix for all new files
+sentence Suffix _onset
+endform
+
+header_row$ = "SegmentFilename" + tab$ + "Duration(ms)" + tab$ + newline$
+header_row$ > 'newdirectory$'/segment_duration_log.txt
+
+Create Strings as file list...  list 'directory$'/*.wav
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'directory$'/'current_file$'
+current_filename$ = selected$ ("Sound")
+newfilename$ = "'prefix$'" + "'current_filename$'" + "'suffix$'" + ".wav"
+	
+select Sound 'current_filename$'
+word_start = Get start time
+To TextGrid... "word"
+plus Sound 'current_filename$'
+Edit
+editor TextGrid 'current_filename$'
+
+Move cursor to... timepoint
+Move cursor to nearest zero crossing
+Add on tier 1
+
+cursor = Get cursor
+Select... word_start cursor
+
+segment_duration = (cursor - word_start)*1000
+fileappend "'newdirectory$'/segment_duration_log.txt" 'newfilename$''tab$''segment_duration''tab$''newline$'
+
+Write selected sound to WAV file... 'newdirectory$'/'newfilename$'
+Save TextGrid as text file... 'newdirectory$'/'current_filename$'.TextGrid
+
+endeditor TextGrid 'current_filename$'
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

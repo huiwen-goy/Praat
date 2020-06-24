@@ -1,0 +1,71 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Appends three extra seconds to textgrids, before and after sentence markers
+comment Original textgrids
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save new textgrids to
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list...  list 'directory$'/*.TextGrid
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'directory$'/'current_file$'
+filename$ = selected$ ("TextGrid")
+
+sentence_label$ = Get label of interval... 1 2
+carrier_label$ = Get label of interval... 2 2
+word_label$ = Get label of interval... 3 2
+
+sentence_start = Get start point... 1 2
+sentence_end = Get end point... 1 2
+sentence_duration = sentence_end - sentence_start
+
+carrier_end = Get end point... 2 2
+carrier_duration = carrier_end - sentence_start
+
+word_duration = sentence_end - carrier_end
+
+new_length_textgrid = sentence_duration + 6.0
+
+new_sentence_end = sentence_duration + 3.0
+new_carrier_end = carrier_duration + 3.0
+
+Create TextGrid...   0 new_length_textgrid "sentence carrier word" 
+Edit
+editor TextGrid sentence_carrier_word
+
+Move cursor to... 3.0
+Add on tier 1
+Add on tier 2
+
+Move cursor to... new_carrier_end
+Add on tier 2
+Add on tier 3
+
+Move cursor to... new_sentence_end
+Add on tier 1
+Add on tier 3
+
+endeditor TextGrid sentence_carrier_word
+
+select TextGrid sentence_carrier_word
+
+Set interval text... 1 2 'sentence_label$'
+Set interval text... 2 2 'carrier_label$'
+Set interval text... 3 2 'word_label$'
+
+Save as text file... 'newdirectory$'/'filename$'.TextGrid
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

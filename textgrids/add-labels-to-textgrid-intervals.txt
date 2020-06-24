@@ -1,0 +1,40 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Add labels to textgrids
+comment Where are the blank textgrids?
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save labelled textgrids to?
+sentence Newdirectory /Users/Shared/Praat_test/NewSoundfiles
+comment Callsign for series?
+sentence Callsign Charlie
+comment Colour for series?
+sentence Colour blue
+endform
+
+Create Strings as file list...  list 'directory$'/*.TextGrid
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'directory$'/'current_file$'
+filename$ = selected$ ("TextGrid")
+
+Set interval text... 1 1 Ready
+Set interval text... 1 2 'callsign$'
+Set interval text... 1 3 go to
+Set interval text... 1 4 'colour$'
+Set interval text... 1 5 'a'
+Set interval text... 1 6 now
+
+Write to text file... 'newdirectory$'/'filename$'.TextGrid
+
+select TextGrid 'filename$'
+Remove
+
+endfor
+
+clearinfo
+printline New textgrids saved to 'newdirectory$'/
+print :O)

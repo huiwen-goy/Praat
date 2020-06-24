@@ -1,0 +1,78 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Combine and compare textgrids
+comment Textgrids Set 1
+sentence Original_1 /Users/Shared/Praat_test/OrigSoundfiles/Set1
+comment Textgrids Set 2
+sentence Original_2 /Users/Shared/Praat_test/OrigSoundfiles/Set2
+comment Save new combined textgrids to?
+sentence Newfolder /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list... list 'original_1$'/*.TextGrid
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+currentfile$ = Get string... a
+
+Read from file... 'original_1$'/'currentfile$'
+
+filename$ = selected$ ("TextGrid")
+
+total_duration = Get total duration
+
+sentence_start_Set1 = Get start point... 1 2
+sentence_end_Set1 = Get end point... 1 2
+word_start_Set1 = Get start point... 3 2
+vowel_start_Set1 = Get start point... 4 2
+vowel_end_Set1 = Get end point... 4 2
+
+Read from file... 'original_2$'/'filename$'.TextGrid
+
+sentence_start_Set2 = Get start point... 1 2
+sentence_end_Set2 = Get end point... 1 2
+word_start_Set2 = Get start point... 3 2
+vowel_start_Set2 = Get start point... 4 2
+vowel_end_Set2 = Get end point... 4 2
+
+Create TextGrid... 0 total_duration "Set1 Set2" 
+
+Edit
+editor TextGrid Set1_Set2
+
+Move cursor to... sentence_start_Set1
+Add on tier 1
+Move cursor to... word_start_Set1
+Add on tier 1
+Move cursor to... vowel_start_Set1
+Add on tier 1
+Move cursor to... vowel_end_Set1
+Add on tier 1
+Move cursor to... sentence_end_Set1
+Add on tier 1
+
+Move cursor to... sentence_start_Set2
+Add on tier 2
+Move cursor to... word_start_Set2
+Add on tier 2
+Move cursor to... vowel_start_Set2
+Add on tier 2
+Move cursor to... vowel_end_Set2
+Add on tier 2
+Move cursor to... sentence_end_Set2
+Add on tier 2
+
+endeditor TextGrid Set1_Set2
+
+Write to text file... 'newfolder$'/'filename$'.TextGrid
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

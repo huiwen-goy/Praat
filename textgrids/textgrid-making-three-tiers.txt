@@ -1,0 +1,42 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Three-tiered textgrids
+comment Original soundfiles
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+comment Save textgrids to
+sentence Textgrid_directory /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list... list 'directory$'/*.wav
+
+number_of_files = Get number of strings
+for x from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... x
+
+Read from file... 'directory$'/'current_file$'
+
+object_name$ = selected$ ("Sound")
+
+To TextGrid... "word1 word2 word3"
+
+select Sound 'object_name$'
+plus TextGrid 'object_name$'
+
+View & Edit
+
+pause Mark your segments! 
+
+select TextGrid 'object_name$'
+Write to text file... 'directory$'/'object_name$'.TextGrid
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)
+

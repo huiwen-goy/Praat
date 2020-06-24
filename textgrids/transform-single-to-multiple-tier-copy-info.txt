@@ -1,0 +1,59 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Single tier to multiple tiers
+comment Where are the single-tier textgrids?
+sentence Singletier_folder /Users/Shared/Praat_test/OrigSoundfiles/singletier textgrids
+comment Save new five-tier textgrids to?
+sentence Fivetier_folder /Users/Shared/Praat_test/NewSoundfiles
+endform
+
+Create Strings as file list... list 'singletier_folder$'/*.TextGrid
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+currentfile$ = Get string... a
+Read from file... 'singletier_folder$'/'currentfile$'
+filename$ = selected$ ("TextGrid")
+
+sentence_start = Get start point... 1 2
+sentence_end = Get end point... 1 5
+word_start = Get start point... 1 3
+vowel_start = Get start point... 1 4
+vowel_end = Get end point... 1 4
+
+total_duration = Get total duration
+
+Create TextGrid... 0 total_duration "sentence carrier word vowel consonants" 
+
+Insert boundary... 1 sentence_start
+Insert boundary... 2 sentence_start
+
+Insert boundary... 1 sentence_end
+Insert boundary... 3 sentence_end
+Insert boundary... 5 sentence_end
+
+Insert boundary... 2 word_start
+Insert boundary... 3 word_start
+Insert boundary... 5 word_start
+
+Insert boundary... 4 vowel_start
+Insert boundary... 5 vowel_start
+
+Insert boundary... 4 vowel_end
+Insert boundary... 5 vowel_end
+
+endeditor TextGrid sentence_carrier_word_vowel_consonants
+
+newfilename$ = "'filename$'" + "_fivetier"
+Write to text file... 'fivetier_folder$'/'newfilename$'.TextGrid
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

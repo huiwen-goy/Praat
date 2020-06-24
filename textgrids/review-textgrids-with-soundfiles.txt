@@ -1,0 +1,42 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Review textgrids with sound files
+comment Where are the sound files?
+sentence Original_folder /Users/Shared/Praat_test/OrigSoundfiles
+comment Where are the textgrids?
+sentence Textgrid_folder /Users/Shared/Praat_test/OrigSoundfiles
+endform
+
+Create Strings as file list... list 'original_folder$'/*.wav
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'original_folder$'/'current_file$'
+
+object_name$ = selected$ ("Sound")
+
+Read from file... 'textgrid_folder$'/'object_name$'.TextGrid
+
+select TextGrid 'object_name$'
+plus Sound 'object_name$'
+
+Edit
+editor TextGrid 'object_name$'
+
+Zoom... 3.5 4.5
+
+pause Review textgrid
+
+endeditor
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)

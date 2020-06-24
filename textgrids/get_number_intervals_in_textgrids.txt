@@ -1,0 +1,30 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+directory$ = "/Users/Shared/Praat_test/OrigSoundfiles"
+datafilename$ = "number_intervals_log"
+
+Create Strings as file list... list 'directory$'/*.TextGrid
+number_files = Get number of strings
+
+header$ = "Filename" + tab$ + "Intervals" + newline$
+header$ > 'directory$'/'datafilename$'.txt
+
+for a from 1 to number_files
+
+select Strings list
+currentfile$ = Get string... a
+
+Read from file... 'directory$'/'currentfile$'
+number_intervals = Get number of intervals... 1
+
+filename$ = selected$ ("TextGrid")
+
+fileappend "'directory$'/'datafilename$'.txt" 'filename$''tab$''number_intervals''tab$''newline$'
+
+select TextGrid 'filename$'
+Remove
+
+endfor
+
+clearinfo
+print :O)

@@ -1,0 +1,38 @@
+# Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+form Get labels in textgrids
+comment Textgrids folder
+sentence Directory /Users/Shared/Praat_test/OrigSoundfiles
+endform
+
+header_row$ = "Filename" + tab$ + "Interval_label" + tab$ + newline$ 
+header_row$ > 'directory$'/labels_log.txt
+
+Create Strings as file list...  list 'directory$'/*.TextGrid
+number_files = Get number of strings
+
+for j from 1 to number_files
+select Strings list
+currentfile$ = Get string... j
+Read from file... 'directory$'/'currentfile$'
+     
+object_name$ = selected$ ("TextGrid")
+number_of_intervals = Get number of intervals... 1
+
+for b to number_of_intervals
+
+select TextGrid 'object_name$'
+interval_label$ = Get label of interval... 1 b
+
+fileappend "'directory$'/labels_log.txt" 'object_name$''tab$''interval_label$''tab$''newline$'
+
+endfor
+
+select all
+minus Strings list
+Remove
+
+endfor
+
+clearinfo
+print :O)
